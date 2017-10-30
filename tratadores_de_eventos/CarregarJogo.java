@@ -4,7 +4,7 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import janela.TelaInicial;
+import Inicio.TelaInicial;
 
 public class CarregarJogo implements ActionListener{
 	
