@@ -7,8 +7,9 @@ import javax.swing.*;
 
 import janela.Imagem_Inicio;
 
+@SuppressWarnings("serial")
 public class TelaInicial extends JFrame{
-	int LARGURA=800,ALTURA=600;
+	private final int LARGURA=800, ALTURA=600;
 	private static JFrame fr=null;
 	private TelaInicial(String s){
 		super(s);
@@ -24,7 +25,7 @@ public class TelaInicial extends JFrame{
 		bCarregar.setBounds(500,500,200,50);
 		c.add(bNovo);
 		c.add(bCarregar);
-		
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		c.add(p1);
 		setBounds(300,50,LARGURA+16,ALTURA+39);
 		setVisible(true);

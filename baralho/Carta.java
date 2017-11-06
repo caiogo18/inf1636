@@ -1,7 +1,5 @@
 package baralho;
 
-import javax.swing.*;
-
 import janela.Imagem_Panel;
 
 public class Carta {

@@ -1,9 +1,11 @@
 package Inicio;
-import jogo.*;
-import java.awt.*;
-import java.awt.event.*;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.*;
+
+import jogo.Controle_do_jogo;
 
 public class IniciarJogo implements ActionListener{
 	private JTextField[] vt;

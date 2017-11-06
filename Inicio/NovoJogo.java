@@ -32,7 +32,7 @@ public class NovoJogo implements ActionListener{
 		c.add(b3);
 		c.add(b4);
 		c.add(bEnter);
-		Imagem_Inicio p1=Imagem_Inicio.get_Panel();
+		JPanel p1=Imagem_Inicio.get_Panel();
 		p1.setBounds(0, 0,c.getWidth(),c.getHeight());
 		c.add(p1);
 		TelaInicial.get_frame().repaint();
