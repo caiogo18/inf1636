@@ -18,7 +18,7 @@ public class IniciarJogo implements ActionListener{
 		for(int i=0;i<nomes.length;i++){
 			nomes[i]=vt[i].getText();
 		}
-		Controle_do_jogo.Criar_jogadores(nomes);
+		Controle_do_jogo.Criar_jogo(nomes);
 	}
 
 }

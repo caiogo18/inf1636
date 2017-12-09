@@ -3,9 +3,6 @@ import Inicio.TelaInicial;
 import jogador.Banca;
 import jogador.Jogador;
 
-
-import baralho.Baralho;
-import baralho.Carta;
 import janela.Janela_Banca;
 import janela.Janela_Jogador;
 
@@ -14,12 +11,12 @@ public class Controle_do_jogo {
 	private static Janela_Jogador[] vfr;
 	private static Jogador[] vj;
 	private static Banca banca;
-	private static int[] sit;
+	private static Janela_Banca janela_banca;
 	public static void main(String[] args) {
 		TelaInicial.get_frame();
 
 	}
-	public static void Criar_jogadores(String[] jogadores) {
+	public static void Criar_jogo(String[] jogadores) {
 		nomes=jogadores;
 		int x = (1200 / nomes.length) / 2 - 150, y = 400;
 		int parametro = 1200 / nomes.length;
@@ -28,93 +25,47 @@ public class Controle_do_jogo {
 		for (int i = 0; i < nomes.length; i++) {
 			vj[i] = new Jogador(5000, nomes[i]);
 			vfr[i] = new Janela_Jogador(nomes[i], x, y,i);
+			vj[i].addObserver(vfr[i]);
 			x += parametro;
 		}
-		sit=new int[nomes.length];
-		Janela_Banca.get_frame();
+		janela_banca=new Janela_Banca();
 		banca=new Banca();
+		banca.addObserver(janela_banca);
 		for(int i=0;i<vfr.length;i++){
 			vfr[i].desabilitar();
+			vfr[i].mudar_dinheiro(vj[i].get_Cash());
 		}
+		Turno.iniciar_turno();
+		
 	}
-	public static void iniciar_rodada(){
-		Baralho.embaralha();
-		for(int j=0;j<2;j++){
-			for(int i=0;i<vfr.length;i++){
-				System.out.println("espera");
-				add_card(i);
-			}
-			add_card(10);
-		}
-		Janela_Banca.get_frame().b.setEnabled(false);
-		Controle_do_jogo.jogada(0);
+	public static void finalizar_turno(){
+		janela_banca.esperar_rodada();
 	}
-	public static void jogada(int ndojogador){
-		if(ndojogador!=0){
-			vfr[ndojogador-1].desabilitar();
-		}
-		if(ndojogador<vfr.length){
-			if(vj[ndojogador].get_pont()==21){
-				ganhar(ndojogador);
-				jogada(ndojogador+1);
-			}
-			else{
-				sit[ndojogador]=0;
-				vfr[ndojogador].habilitar();	
-			}
-		}
-		else{
-			Janela_Banca.revelar();
-			while(banca.get_pont()<17){
-				add_card(10);
-			}
-			if(banca.get_pont()>21) resultado(true);
-			else resultado(false);
-		}
+	public static void add_card(int num){
+		vj[num].add_card();
 	}
-	public static void add_card(int i){
-		Carta card=Baralho.get();
-		if(i==10){
-			banca.nova_carta(card);
-			Janela_Banca.add_card(card);
-			if(banca.get_pont()>21){
-				System.out.println("a banca quebrou");
-			}
-		}
-		else{
-			vj[i].nova_carta(card);
-			vfr[i].add_card(card,vj[i].get_pont());
-			if(vj[i].get_pont()>21){
-				perder(i);
-				jogada(i+1);
-			}
-		}
+	public static Jogador[] get_jogadores() {
+		return vj;
 	}
-	private static void resultado(boolean quebrou){
-		for(int i=0;i<vj.length;i++){
-			if(sit[i]==0){
-				if(quebrou==true||vj[i].get_pont()>banca.get_pont()){
-					ganhar(i);
-				}
-				else if(vj[i].get_pont()==banca.get_pont()){
-					empatou(i);
-				}
-				else{
-					perder(i);
-				}
-			}
-		}
+	public static Banca get_banca() {
+		return banca;
 	}
-	private static void ganhar(int i){
-		vfr[i].win();
-		sit[i]=1;
+	public static void iniciar_turno() {
+		Turno.iniciar_turno();
 	}
-	private static void perder(int i){
-		vfr[i].lose();
-		sit[i]=-1;
+	public static void Apostar(int i) {
+		Turno.Apostar(i);
 	}
-	private static void empatou(int i){
-		vfr[i].draw();
+	public static void set_Observer(Aposta aposta,int i){
+		aposta.addObserver(vfr[i].get_observer());
+	}
+	public static void Aumentar_Aposta(int ndojogador, int valor) {
+		Turno.Aumentar_Aposta(ndojogador, valor);
+		
+	}
+	public static void jogada(int i) {
+		Turno.jogada();
+		
 	}
 		
 }
