@@ -15,9 +15,10 @@ import baralho.Carta;
 import jogador.Banca;
 import jogador.Jogador;
 import jogo.Controle_do_jogo;
+import tratadores_de_eventos.Turno_listener;
 
 @SuppressWarnings("serial")
-public class Janela_Banca extends JFrame implements ActionListener,Observer{
+public class Janela_Banca extends JFrame implements Observer{
 	private final int LARGURA=600,ALTURA=400;
 	private JPanel painel=new JPanel();
 	private ArrayList<Carta> lista	;
@@ -30,7 +31,7 @@ public class Janela_Banca extends JFrame implements ActionListener,Observer{
 		painel.setBounds(175,100, 250, 100);
 		painel.setOpaque(false);
 		b.setBounds(0,300,100,50);
-		b.addActionListener(this);
+		b.addActionListener(new Turno_listener());
 		b.setEnabled(false);
 		pont=new Pontuacao();
 		pont.setOpaque(false);
@@ -46,12 +47,6 @@ public class Janela_Banca extends JFrame implements ActionListener,Observer{
 		setResizable(false);
 		setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-	}
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		JButton b=(JButton)e.getSource();
-		b.setEnabled(false);
-		Controle_do_jogo.iniciar_turno();
 	}
 	public void add_card(){
 		painel.removeAll();

@@ -5,6 +5,8 @@ import java.util.Observable;
 
 import baralho.Baralho;
 import baralho.Carta;
+import baralho.Naipe;
+import baralho.Valor;
 import jogo.Controle_do_jogo;
 
 public class Jogador_Blackjack extends Observable{

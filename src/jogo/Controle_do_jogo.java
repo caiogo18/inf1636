@@ -41,31 +41,14 @@ public class Controle_do_jogo {
 	public static void finalizar_turno(){
 		janela_banca.esperar_rodada();
 	}
-	public static void add_card(int num){
-		vj[num].add_card();
-	}
 	public static Jogador[] get_jogadores() {
 		return vj;
 	}
 	public static Banca get_banca() {
 		return banca;
 	}
-	public static void iniciar_turno() {
-		Turno.iniciar_turno();
-	}
-	public static void Apostar(int i) {
-		Turno.Apostar(i);
-	}
 	public static void set_Observer(Aposta aposta,int i){
 		aposta.addObserver(vfr[i].get_observer());
-	}
-	public static void Aumentar_Aposta(int ndojogador, int valor) {
-		Turno.Aumentar_Aposta(ndojogador, valor);
-		
-	}
-	public static void jogada(int i) {
-		Turno.jogada();
-		
 	}
 		
 }

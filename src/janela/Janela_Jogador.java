@@ -12,8 +12,10 @@ import jogador.Jogador;
 import jogo.Aposta;
 import jogo.Situation;
 import jogo.Turno;
+import tratadores_de_eventos.Allin_listener;
 import tratadores_de_eventos.Apostar_listener;
 import tratadores_de_eventos.Aumentar_listener;
+import tratadores_de_eventos.Dobrar_listener;
 import tratadores_de_eventos.Ficar;
 import tratadores_de_eventos.Pedir_Carta;
 @SuppressWarnings("serial")
@@ -28,6 +30,8 @@ public class Janela_Jogador extends JFrame implements Observer{
 	private JButton bAposta;
 	private JButton bPedir;
 	private JButton bFicar;
+	private JButton bDobrar;
+	private JButton bAllin;
 	public Janela_Jogador(String nome,int x,int y,int i){
 		super(nome);
 		setLayout(null);
@@ -41,12 +45,12 @@ public class Janela_Jogador extends JFrame implements Observer{
 		ActionListener ficarlistener=new Ficar();
 		bFicar.addActionListener(ficarlistener);
 		c.add(bFicar);
-		ActionListener listener=new Pedir_Carta(i);
+		ActionListener listener=new Pedir_Carta();
 		bPedir.addActionListener(listener);
 		c.add(bPedir);
 		bAposta=new JButton("Apostar");
-		bAposta.setBounds(200,200,100,50);
-		bAposta.addActionListener(new Apostar_listener(i));
+		bAposta.setBounds(0,250,100,50);
+		bAposta.addActionListener(new Apostar_listener());
 		c.add(bAposta);
 		aposta=new Texto_Aposta();
 		aposta.setBounds(5,20,80,50);
@@ -55,6 +59,14 @@ public class Janela_Jogador extends JFrame implements Observer{
 		painel_resultado.setBounds(25, 0, 250, 200);
 		painel_resultado.setOpaque(false);
 		add(painel_resultado);
+		bDobrar=new JButton("Dobrar");
+		bDobrar.setBounds(200,200,100,50);
+		bDobrar.addActionListener(new Dobrar_listener());
+		c.add(bDobrar);
+		bAllin=new JButton("All-in");
+		bAllin.setBounds(100,250,100,50);
+		bAllin.addActionListener(new Allin_listener());
+		c.add(bAllin);
 		add_fichas(i);
 		Pontuacao pont=new Pontuacao();
 		JPanel p=new Imagem_Panel("imagens/Jogador_Mesa.jpg",0,0);
@@ -175,15 +187,16 @@ public class Janela_Jogador extends JFrame implements Observer{
 			else if(arg1 instanceof Situation){
 				change_situation((Situation)(arg1));
 			}
+			else if(arg1 instanceof Integer){
+				dinheiro.mudar_valor((int)arg1);
+			}
 		}
 	}
 	private void change_situation(Situation situation) {
-		String aux;
-		Container c=getContentPane();
-		Component[] V =c.getComponents();
 		switch(situation){
 			case APOSTAR:
 				bAposta.setEnabled(true);
+				bAllin.setEnabled(true);
 				break;
 			case DESABILITADO:
 				desabilitar();
@@ -206,8 +219,12 @@ public class Janela_Jogador extends JFrame implements Observer{
 			case EMPATOU:
 				draw();
 				break;
+			case NDOBRA:
+				habilitar();
+				bDobrar.setEnabled(false);
+				break;
 			default:
-				habilitar(situation);
+				habilitar();
 		}
 		
 	}
@@ -221,10 +238,8 @@ public class Janela_Jogador extends JFrame implements Observer{
 			}
 		}
 	}
-	public void habilitar(Situation situation){
-		if(situation==Situation.SEGURO){
-			
-		}
+	public void habilitar(){
+		bDobrar.setEnabled(true);
 		bPedir.setEnabled(true);
 		bFicar.setEnabled(true);
 	}

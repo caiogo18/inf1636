@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import jogo.Controle_do_jogo;
+import jogo.Turno;
 
 public class Aumentar_listener implements MouseListener{
 	private int ndojogador;
@@ -20,7 +21,7 @@ public class Aumentar_listener implements MouseListener{
 	public void mouseClicked(MouseEvent e) {
 		Point ponto=e.getPoint();
 		if((Math.pow(ponto.x- CENTER,2) + Math.pow(ponto.y- CENTER,2) )< Math.pow(RADIUS, 2)){
-			Controle_do_jogo.Aumentar_Aposta(ndojogador,valor);
+			Turno.Aumentar_Aposta(ndojogador,valor);
 		}
 		
 	}

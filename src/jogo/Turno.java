@@ -1,7 +1,4 @@
 package jogo;
-
-import java.util.Observable;
-
 import baralho.Baralho;
 import jogador.Banca;
 import jogador.Jogador;
@@ -33,7 +30,7 @@ public class Turno{
 		aposta[vezjogador].vez_set(true);
 		vj[vezjogador].vez_apostar();
 	}
-	public static void iniciar_rodada(){
+	public static void iniciar_jogadas(){
 		Baralho.embaralha();
 		for(int j=0;j<2;j++){
 			for(int i=0;i<vj.length;i++){
@@ -50,14 +47,13 @@ public class Turno{
 			banca.limpa();
 		}
 	}
-	public static void Apostar(int i){
-		if(vezjogador==i){
-			aposta[vezjogador].vez_set(false);
-			vj[vezjogador].desabilitar();
-			vezjogador++;
-		}
+	public static void apostar(){
+		aposta[vezjogador].vez_set(false);
+		vj[vezjogador].apostar();
+		vj[vezjogador].desabilitar();
+		vezjogador++;
 		if(vezjogador>=vj.length){
-			iniciar_rodada();
+			iniciar_jogadas();
 		}
 		else{
 			aposta[vezjogador].vez_set(true);
@@ -68,7 +64,7 @@ public class Turno{
 		return vezjogador;
 	}
 
-	public static void Aumentar_Aposta(int i,int valor){
+	public static void Aumentar_Aposta(int i, int valor){
 		if(aposta[i].vez_aposta()){
 			aposta[i].aumentar_aposta(valor);
 		}
@@ -80,15 +76,9 @@ public class Turno{
 		}
 		if(vezjogador<vj.length){
 			if(Resultado.checa(vj[vezjogador])==true){
-				vezjogador++;
 				jogada();
 			}
-			else if(banca.get_pont()<11){
-				vj[vezjogador].vez_jogador(Situation.NORMAL);	
-			}
-			else{
-				vj[vezjogador].vez_jogador(Situation.SEGURO);
-			}
+			vj[vezjogador].vez_jogador();	
 		}
 		else{
 			banca.play();
@@ -96,5 +86,24 @@ public class Turno{
 			Controle_do_jogo.finalizar_turno();
 			
 		}
+	}
+	public static int get_aposta(Jogador jogador) {
+		for(int i=0;i<vj.length;i++){
+			if(vj[i]==jogador){
+				return aposta[i].get_aposta();
+			}
+		}
+		return 0;
+	}
+	public static void dobrar() {
+		aposta[vezjogador].aumentar_aposta(aposta[vezjogador].get_aposta());
+		vj[vezjogador].dobrar();
+	}
+	public static void allin() {
+		Aumentar_Aposta(vezjogador,vj[vezjogador].get_Cash());
+		apostar();
+	}
+	public static void add_card(){
+		vj[vezjogador].add_card();
 	}
 }
