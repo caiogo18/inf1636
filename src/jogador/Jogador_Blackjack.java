@@ -1,19 +1,21 @@
 package jogador;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Observable;
 
 import baralho.Baralho;
 import baralho.Carta;
-import baralho.Naipe;
-import baralho.Valor;
-import jogo.Controle_do_jogo;
 
-public class Jogador_Blackjack extends Observable{
+public class Jogador_Blackjack extends Observable implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8269448448604476492L;
 	private int pont;
 	private ArrayList<Carta> lista	;
 	public Jogador_Blackjack(){
-		lista=new ArrayList<Carta> ();
+		lista=new ArrayList<Carta>();
 	}
 	public int get_pont(){
 		return pont;
@@ -39,6 +41,10 @@ public class Jogador_Blackjack extends Observable{
 	public void limpa(){
 		lista.removeAll(lista);
 		pont=0;
+		setChanged();
+		notifyObservers(this);
+	}
+	public void reload(){
 		setChanged();
 		notifyObservers(this);
 	}

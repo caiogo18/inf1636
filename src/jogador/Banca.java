@@ -1,6 +1,12 @@
 package jogador;
 
-public class Banca extends Jogador_Blackjack{
+import java.io.Serializable;
+
+public class Banca extends Jogador_Blackjack implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2273403132927488261L;
 	public Banca(){
 		super();
 	}

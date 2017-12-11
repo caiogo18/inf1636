@@ -3,6 +3,8 @@ package tratadores_de_eventos;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+import jogo.Turno;
+
 public class Comprar_listener implements MouseListener{
 	private int numjogador;
 	public Comprar_listener(int i){
@@ -10,7 +12,7 @@ public class Comprar_listener implements MouseListener{
 	}
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		System.out.println("comprar");
+		Turno.Comprar_credito(numjogador);
 	}
 
 	@Override

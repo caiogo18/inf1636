@@ -1,20 +1,25 @@
 package jogador;
 
-import jogo.Controle_do_jogo;
+import java.io.Serializable;
+
 import jogo.Resultado;
-import jogo.Situation;
 import jogo.Turno;
 
-public class Jogador extends Jogador_Blackjack{
+public class Jogador extends Jogador_Blackjack implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7751027695593275429L;
 	private int cash;
 	private String name;
 	private Situation situation;
-	
+	private int creditos;
 	public Jogador(int initial_cash,String name){
 		super();
 		this.name=name;
 		cash=initial_cash;
 		situation=Situation.DESABILITADO;
+		creditos=0;
 		
 	}
 	public String get_Name(){
@@ -109,4 +114,25 @@ public class Jogador extends Jogador_Blackjack{
 		add_card();
 		if(situation!=Situation.ESTOUROU)Turno.jogada();
 	}
+	public void reload(){
+		setChanged();
+		notifyObservers(this);
+		setChanged();
+		notifyObservers(cash);
+		setChanged();
+		notifyObservers(situation);
+	}
+	public int get_creditos(){
+		return creditos;
+	}
+	public void usar_credito(){
+		creditos--;
+		alterar_dinheiro(2500);
+	}
+	public void faliu() {
+		situation=Situation.SAIU;
+		setChanged();
+		notifyObservers(situation);
+	}
+	
 }

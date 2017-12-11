@@ -2,6 +2,7 @@ package janela;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -9,9 +10,8 @@ import javax.swing.*;
 
 import baralho.Carta;
 import jogador.Jogador;
-import jogo.Aposta;
-import jogo.Situation;
-import jogo.Turno;
+import jogador.Situation;
+import jogo.Controle_do_jogo;
 import tratadores_de_eventos.Allin_listener;
 import tratadores_de_eventos.Apostar_listener;
 import tratadores_de_eventos.Aumentar_listener;
@@ -19,12 +19,13 @@ import tratadores_de_eventos.Comprar_listener;
 import tratadores_de_eventos.Dobrar_listener;
 import tratadores_de_eventos.Ficar;
 import tratadores_de_eventos.Pedir_Carta;
+import tratadores_de_eventos.Sair_listener;
 @SuppressWarnings("serial")
 public class Janela_Jogador extends JFrame implements Observer{
 	private final int ALTURA=350,LARGURA=300;
 	private JPanel painel=new JPanel();
 	private Pontuacao pont;
-	private ArrayList<Carta> lista	;
+	private ArrayList<JPanel> lista_painel=new ArrayList<JPanel>();
 	private JPanel painel_resultado;
 	private Texto_Aposta aposta;
 	private Dinheiro_View dinheiro;
@@ -38,7 +39,6 @@ public class Janela_Jogador extends JFrame implements Observer{
 		super(nome);
 		setLayout(null);
 		Container c=getContentPane();
-		lista=new ArrayList<Carta> ();
 		painel.setBounds(25,70, 250, 100);
 		bPedir=new JButton("Pedir");
 		bPedir.setBounds(0,220,100,50);
@@ -57,10 +57,6 @@ public class Janela_Jogador extends JFrame implements Observer{
 		aposta=new Texto_Aposta();
 		aposta.setBounds(5,20,80,50);
 		aposta.setOpaque(false);
-		painel_resultado=new JPanel();
-		painel_resultado.setBounds(25, 30, 250, 200);
-		painel_resultado.setOpaque(false);
-		add(painel_resultado);
 		bDobrar=new JButton("Dobrar");
 		bDobrar.setBounds(200,220,100,50);
 		bDobrar.addActionListener(new Dobrar_listener());
@@ -94,52 +90,57 @@ public class Janela_Jogador extends JFrame implements Observer{
 		setResizable(false);
 		setBounds(x, y, LARGURA, ALTURA);
 		setVisible(true);
+		this.addWindowListener(new Sair_listener(i));
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 	}
 	private void add_card(){
-		
-		painel.removeAll();
+		int LARGURA=25,ALTURA=70;
 		int pos=0;
 		int aux;
-		if( lista.size()<=1){
+		if( lista_painel.size()<=1){
 			aux=0;
 		}
 		else{
-			aux= (250-73)/(lista.size()-1);
+			aux= (250-73)/(lista_painel.size()-1);
 		}
-		for (int i = 0; i < lista.size(); i++) {
-			Carta temp=lista.get(i);
-			JPanel p=new Imagem_Panel(String.format("imagens/%s%s.gif", temp.get_valor(),temp.get_naipe()),0,0);
-			p.setBounds(pos, 0, 73, 97);
+		for (int i = 0; i < lista_painel.size(); i++) {
+			JPanel p=lista_painel.get(i);
+			p.setBounds(LARGURA+pos, ALTURA, 73, 97);
 			pos+=aux;
-			painel.add(p,0);
+			add(p,0);
 		}
 		repaint();
 	}
 	public void win(){
 		JPanel p=new Imagem_Panel("imagens/win.png",0,0);
-		p.setBounds(0, 0, 250, 200);
+		p.setBounds(25, 30, 250, 200);
 		p.setOpaque(false);
-		painel_resultado.add(p);
-		painel_resultado.repaint();
+		add(p,0);
+		painel_resultado=p;
+		repaint();
 	}
 	public void lose(){
 		JPanel p=new Imagem_Panel("imagens/lose.png",0,0);
-		p.setBounds(0, 0, 250, 200);
+		p.setBounds(25, 30, 250, 200);
 		p.setOpaque(false);
-		painel_resultado.add(p);
-		painel_resultado.repaint();
+		add(p,0);
+		painel_resultado=p;
+		repaint();
 	}
 	public void draw(){
 		JPanel p=new Imagem_Panel("imagens/draw.png",0,0);
-		p.setBounds(0, 0, 250, 200);
+		p.setBounds(25, 30, 250, 200);
 		p.setOpaque(false);
-		painel_resultado.add(p);
-		painel_resultado.repaint();
+		add(p,0);
+		painel_resultado=p;
+		repaint();
 	}
 	public void limpar(){
-		painel_resultado.removeAll();
-		painel.removeAll();
-		lista.removeAll(lista);
+		if(painel_resultado!= null)remove(painel_resultado);
+		for(int i=0;i<lista_painel.size();i++){
+			remove(lista_painel.get(i));
+		}
+		lista_painel.removeAll(lista_painel);
 		repaint();
 	}
 	private void add_fichas(int i){
@@ -183,11 +184,20 @@ public class Janela_Jogador extends JFrame implements Observer{
 		if(arg0 instanceof Jogador){
 			if(arg1 instanceof Jogador){
 				pont.set(((Jogador)arg1).get_pont());
-				lista=((Jogador)arg1).get_list();
+				List<Carta> lista=((Jogador)arg1).get_list();
 				if(lista.isEmpty()){
 					limpar();
 				}
 				else{
+					for(int i=0;i<lista_painel.size();i++){
+						remove(lista_painel.get(i));
+					}
+					lista_painel.removeAll(lista_painel);
+					for (int i = 0; i < lista.size(); i++) {
+						Carta temp=lista.get(i);
+						JPanel p=new Imagem_Panel(String.format("imagens/%s%s.gif", temp.get_valor(),temp.get_naipe()),0,0);
+						lista_painel.add(p);
+					}
 					add_card();
 				}
 			}
@@ -226,6 +236,11 @@ public class Janela_Jogador extends JFrame implements Observer{
 			case EMPATOU:
 				draw();
 				break;
+			case SAIU:
+				if(JOptionPane.OK_OPTION==JOptionPane.showConfirmDialog(this, "Voce nao possui mais fichas", "Sair", JOptionPane.DEFAULT_OPTION )){
+					dispose();
+				}
+				break;
 			case NDOBRA:
 				habilitar();
 				bDobrar.setEnabled(false);
@@ -252,6 +267,25 @@ public class Janela_Jogador extends JFrame implements Observer{
 	}
 	public Texto_Aposta get_observer(){
 		return aposta;
+	}
+	
+	public void criar_dialogo(int i,int opcoes){
+		switch(opcoes){
+			case(0):
+				JOptionPane.showMessageDialog(this, "Voce nao possui mais credito");
+				break;
+			case(1):
+				JOptionPane.showMessageDialog(this, "Voce nao pode efetuar compras durante a rodada");
+				break;
+			case(2):
+				if(JOptionPane.OK_OPTION==JOptionPane.showConfirmDialog(this, "Temm certeza que gostaria de comprar mais credito?")){
+					Controle_do_jogo.comprar_credito(i);
+				}
+				break;
+			default:
+				
+		}
+		
 	}
 
 }

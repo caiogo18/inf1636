@@ -1,7 +1,12 @@
 package baralho;
 
+import java.io.Serializable;
 
-public class Carta {
+public class Carta implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5589310594971720467L;
 	private Naipe naipe;
 	private Valor valor;
 	public Carta(Valor valor,Naipe naipe){
